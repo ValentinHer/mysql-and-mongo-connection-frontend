@@ -1,5 +1,7 @@
+const API_URL = import.meta.env.VITE_API_URL;
+
 export const createMysqlUser = async (formData) => {
-  const result = await fetch("http://localhost:3000/mysql/users", {
+  const result = await fetch(`${API_URL}mysql/users`, {
     method: "POST",
     body: formData,
   });
@@ -14,7 +16,7 @@ export const createMysqlUser = async (formData) => {
 };
 
 export const getMysqlUser = async (id) => {
-  const result = await fetch(`http://localhost:3000/mysql/users/${id}`, {
+  const result = await fetch(`${API_URL}mysql/users/${id}`, {
     method: "GET",
   });
 
@@ -24,7 +26,7 @@ export const getMysqlUser = async (id) => {
 };
 
 export const getMysqlUsers = async () => {
-  const result = await fetch("http://localhost:3000/mysql/users", {
+  const result = await fetch(`${API_URL}mysql/users`, {
     method: "GET",
   });
 
@@ -32,7 +34,7 @@ export const getMysqlUsers = async () => {
 };
 
 export const updateMysqlUser = async (formData, id) => {
-  const result = await fetch(`http://localhost:3000/mysql/users/${id}`, {
+  const result = await fetch(`${API_URL}mysql/users/${id}`, {
     method: "PATCH",
     body: formData,
   });
@@ -47,7 +49,7 @@ export const updateMysqlUser = async (formData, id) => {
 };
 
 export const deleteMysqlUser = async (id) => {
-  const result = await fetch(`http://localhost:3000/mysql/users/${id}`, {
+  const result = await fetch(`${API_URL}mysql/users/${id}`, {
     method: "DELETE",
   });
 

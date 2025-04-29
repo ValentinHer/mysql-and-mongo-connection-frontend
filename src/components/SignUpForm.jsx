@@ -9,12 +9,12 @@ import {
   FileText,
   AlertCircle,
   SquarePen,
+  LoaderCircle,
 } from "lucide-react";
 import { createMysqlUser } from "../hooks/mysqlUsers.hook";
 import { createUser } from "../hooks/mongoDbUsers.hook";
 import Alertmessage from "./AlertMessage";
 
-// Zod schema for form validation
 const signUpSchema = z
   .object({
     name: z
@@ -76,8 +76,6 @@ const signUpSchema = z
             "La descripción no debe contener espacios al principio o final",
         }
       ),
-    // .optional()
-    // .or(z.literal(''))
   })
   .refine((data) => data.password === data.passwordConfirmation, {
     message: "Las contraseñas no coinciden",
@@ -90,6 +88,7 @@ function SignUpForm() {
   const [file, setFile] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
   const [alertType, setAlertType] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -102,7 +101,6 @@ function SignUpForm() {
       name: "",
       password: "",
       date_signup: new Date(),
-      // .split('T')[0],
       description: "",
     },
   });
@@ -117,9 +115,12 @@ function SignUpForm() {
   };
 
   const onSubmit = async (data) => {
+    setLoading(true);
+
     const { passwordConfirmation, password, name, date_signup, description } =
       data;
-    console.log(data);
+    // console.log(data);
+  
     const formdata = new FormData();
     formdata.append("name", name);
     formdata.append("password", password);
@@ -127,16 +128,18 @@ function SignUpForm() {
     formdata.append("description", description);
     formdata.append("file", file);
 
-    const newDta = [...formdata.entries()];
-    console.log(newDta);
+    // const newDta = [...formdata.entries()];
+    // console.log(newDta);
 
     if (selectedDb == "mysql") {
       const result = await createMysqlUser(formdata);
       if (result.type == "error") {
+        setLoading(false);
         setAlertMessage(result.message);
         setAlertType(result.type);
         setTimeout(() => setAlertMessage(""), 3000);
       } else {
+        setLoading(false);
         setAlertMessage(result.message);
         setAlertType(result.type);
         setTimeout(() => setAlertMessage(""), 3000);
@@ -144,14 +147,16 @@ function SignUpForm() {
         setImagePreview("");
       }
 
-      console.log(result);
+      // console.log(result);
     } else {
       const result = await createUser(formdata);
       if (result.type == "error") {
+        setLoading(false);
         setAlertMessage(result.message);
         setAlertType(result.type);
         setTimeout(() => setAlertMessage(""), 3000);
       } else {
+        setLoading(false);
         setAlertMessage(result.message);
         setAlertType(result.type);
         setTimeout(() => setAlertMessage(""), 3000);
@@ -169,12 +174,9 @@ function SignUpForm() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-5 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 pt-21 to-indigo-100 py-5 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md md:max-w-xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="px-6 py-6">
-          {/* <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">
-            Sign Up
-          </h2> */}
 
           {alertMessage && (
             <Alertmessage alertType={alertType} message={alertMessage} />
@@ -194,7 +196,7 @@ function SignUpForm() {
             />
             <label
               htmlFor="image-upload"
-              className="flex justify-center items-center bg-neutral-950 w-7 h-7 rounded-full absolute bottom-3 right-50 hover:bg-neutral-700 cursor-pointer transition-colors"
+              className="flex justify-center items-center bg-neutral-950 w-7 h-7 rounded-full absolute bottom-3 right-35 md:bottom-3 md:right-50 hover:bg-neutral-700 cursor-pointer transition-colors"
             >
               <SquarePen className="w-4 h-4" color="white" />
             </label>
@@ -202,7 +204,6 @@ function SignUpForm() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="block mb-0 md:flex md:mb-4 gap-x-4">
-              {/* Name Field */}
               <div className="w-full md:w-70 mb-3 md:mb-0">
                 <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
                   <User className="w-4 h-4 mr-2" />
@@ -219,7 +220,6 @@ function SignUpForm() {
                 {errors.name && renderError(errors.name.message)}
               </div>
 
-              {/* Date Signup Field */}
               <div className="w-full md:w-70 mb-3 md:mb-0">
                 <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
                   <Calendar className="w-4 h-4 mr-2" />
@@ -237,7 +237,6 @@ function SignUpForm() {
             </div>
 
             <div className="block mb-0 md:flex md:mb-4 gap-x-4">
-              {/* Password Field */}
               <div className="w-full md:w-70 mb-3 md:mb-0">
                 <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
                   <Lock className="w-4 h-4 mr-2" />
@@ -254,7 +253,6 @@ function SignUpForm() {
                 {errors.password && renderError(errors.password.message)}
               </div>
 
-              {/* Password Confirmation Field */}
               <div className="w-full md:w-70 mb-3 md:mb-0">
                 <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
                   <Lock className="w-4 h-4 mr-2" />
@@ -273,7 +271,6 @@ function SignUpForm() {
               </div>
             </div>
 
-            {/* Description Field */}
             <div className="mb-3">
               <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
                 <FileText className="w-4 h-4 mr-2" />
@@ -304,13 +301,13 @@ function SignUpForm() {
               </select>
             </div>
 
-            {/* Submit Button */}
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+                disabled={loading}
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors cursor-pointer"
               >
-                Registrar
+                {loading ? <LoaderCircle className="animate-spin" /> : "Registrar"}
               </button>
             </div>
           </form>

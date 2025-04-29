@@ -1,8 +1,23 @@
-# React + Vite
+# FrontEnd de Administración de usuarios en MySql y MongoDB
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Descripción
+FrontEnd para administrar usuarios en MySql y MongoDB.
 
-Currently, two official plugins are available:
+Si todavia no tienes la API del proyecto, clonalo desde el siguiente repositorio: [mysql-and-mongo-connection-backend](https://github.com/ValentinHer/mysql-and-mongo-connection-backend).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Configuración
+
+- **Clona o descarga el archivo `.zip` de este repositorio**.
+   - Instala las dependencias del proyecto:
+
+        ```
+        npm install
+        ```
+
+## Inicialización
+
+- **Inicializa el proyecto**.
+
+    ```
+    npm run dev
+    ```

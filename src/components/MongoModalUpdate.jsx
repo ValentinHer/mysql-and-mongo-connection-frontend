@@ -9,12 +9,11 @@ import {
   FileText,
   AlertCircle,
   SquarePen,
+  LoaderCircle,
 } from "lucide-react";
-// import { createMysqlUser } from "../hooks/mysqlUsers.hook";
 import { updateUser } from "../hooks/mongoDbUsers.hook";
 import Alertmessage from "./AlertMessage";
 
-// Zod schema for form validation
 const signUpSchema = z
   .object({
     name: z
@@ -95,7 +94,7 @@ function MongoModal({ closeModal, user, botonActive }) {
   const [file, setFile] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
   const [alertType, setAlertType] = useState("");
-  const [botonMongoActive, setBotonMongoActive] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -105,11 +104,10 @@ function MongoModal({ closeModal, user, botonActive }) {
   } = useForm({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      name: user.name,
+      name: user?.name,
       password: "",
-      date_signup: new Date(user.date_signup).toISOString().split("T")[0],
-      // .split('T')[0],
-      description: user.description,
+      date_signup: new Date(user?.date_signup).toISOString().split("T")[0],
+      description: user?.description,
     },
   });
 
@@ -127,7 +125,7 @@ function MongoModal({ closeModal, user, botonActive }) {
       data;
     const formdata = new FormData();
 
-    if (name && name != user.name) {
+    if (name && name != user?.name) {
       formdata.append("name", name);
     }
 
@@ -138,12 +136,12 @@ function MongoModal({ closeModal, user, botonActive }) {
     if (
       date_signup &&
       new Date(date_signup).toISOString() !=
-        new Date(user.date_signup).toISOString()
+        new Date(user?.date_signup).toISOString()
     ) {
       formdata.append("date_signup", date_signup);
     }
 
-    if (description && description != user.description) {
+    if (description && description != user?.description) {
       formdata.append("description", description);
     }
 
@@ -152,15 +150,16 @@ function MongoModal({ closeModal, user, botonActive }) {
     }
 
     if ([...formdata.entries()].length > 0) {
-      const result = await updateUser(formdata, user._id);
-      setBotonMongoActive(true);
+      setLoading(true);
+      const result = await updateUser(formdata, user?._id);
 
       if (result.type === "error") {
+        setLoading(false);
         setAlertMessage(result.message);
         setAlertType(result.type);
         setTimeout(() => setAlertMessage(""), 3000);
-        setBotonMongoActive(false);
       } else {
+        setLoading(false);
         setAlertMessage(result.message);
         setAlertType(result.type);
         setTimeout(() => {
@@ -176,8 +175,6 @@ function MongoModal({ closeModal, user, botonActive }) {
       setAlertType("error");
       setTimeout(() => setAlertMessage(""), 3000);
     }
-
-    // const result =  await updateUser()
   };
 
   const renderError = (error) => (
@@ -194,18 +191,18 @@ function MongoModal({ closeModal, user, botonActive }) {
         onClick={closeModal}
       ></div>
 
-      <div className="px-6 py-6 relative max-w-md md:max-w-xl mx-auto bg-white rounded-xl shadow-lg my-10 overflow-y-auto z-50 p-6">
-        {/* <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">
-            Sign Up
-          </h2> */}
+      <div className="px-6 py-6 relative max-w-md md:max-w-xl mx-auto bg-white rounded-xl shadow-lg overflow-y-auto z-50 max-h-[90vh]">
+          <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">
+            Actualizar usuario
+          </h2>
         {alertMessage && (
           <Alertmessage alertType={alertType} message={alertMessage} />
         )}
 
         <div className="flex justify-center relative mb-4">
           <img
-            src={imagePreview ? imagePreview : user.image_url}
-            title={`image profile ${user.name}`}
+            src={imagePreview ? imagePreview : user?.image_url}
+            title={`image profile ${user?.name}`}
             className="w-32 h-32 object-cover rounded-full bg-gray-300 static"
           />
           <input
@@ -225,7 +222,6 @@ function MongoModal({ closeModal, user, botonActive }) {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="block mb-0 md:flex md:mb-4 gap-x-4">
-            {/* Name Field */}
             <div className="w-full md:w-70 mb-3 md:mb-0">
               <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
                 <User className="w-4 h-4 mr-2" />
@@ -242,7 +238,6 @@ function MongoModal({ closeModal, user, botonActive }) {
               {errors.name && renderError(errors.name.message)}
             </div>
 
-            {/* Date Signup Field */}
             <div className="w-full md:w-70 mb-3 md:mb-0">
               <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
                 <Calendar className="w-4 h-4 mr-2" />
@@ -260,7 +255,6 @@ function MongoModal({ closeModal, user, botonActive }) {
           </div>
 
           <div className="block mb-0 md:flex md:mb-4 gap-x-4">
-            {/* Password Field */}
             <div className="w-full md:w-70 mb-3 md:mb-0">
               <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
                 <Lock className="w-4 h-4 mr-2" />
@@ -277,7 +271,6 @@ function MongoModal({ closeModal, user, botonActive }) {
               {errors.password && renderError(errors.password.message)}
             </div>
 
-            {/* Password Confirmation Field */}
             <div className="w-full md:w-70 mb-3 md:mb-0">
               <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
                 <Lock className="w-4 h-4 mr-2" />
@@ -296,7 +289,6 @@ function MongoModal({ closeModal, user, botonActive }) {
             </div>
           </div>
 
-          {/* Description Field */}
           <div className="mb-3">
             <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
               <FileText className="w-4 h-4 mr-2" />
@@ -313,21 +305,21 @@ function MongoModal({ closeModal, user, botonActive }) {
             {errors.description && renderError(errors.description.message)}
           </div>
 
-          {/* Submit Button */}
           <div className="flex justify-end gap-x-4">
             <button
               type="button"
               onClick={closeModal}
-              className="flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-black hover:bg-amber-600 hover:text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+              disabled={loading}
+              className={`flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-black hover:bg-amber-600 hover:text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors cursor-pointer`}
             >
               Cancelar
             </button>
             <button
               type="submit"
-              disabled={botonMongoActive}
-              className={`flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${botonMongoActive ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"}  transition-colors`}
+              disabled={loading}
+              className={`flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer transition-colors`}
             >
-              Actualizar
+              {loading ? <LoaderCircle className="animate-spin" /> : "Actualizar"}
             </button>
           </div>
         </form>

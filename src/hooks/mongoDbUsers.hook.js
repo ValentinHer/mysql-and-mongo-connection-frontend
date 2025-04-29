@@ -1,5 +1,7 @@
+const API_URL = import.meta.env.VITE_API_URL;
+
 export const createUser = async (formData) => {
-  const result = await fetch("http://localhost:3000/mongodb/users", {
+  const result = await fetch(`${API_URL}mongodb/users`, {
     method: "POST",
     body: formData,
   });
@@ -14,7 +16,7 @@ export const createUser = async (formData) => {
 };
 
 export const getUser = async (id) => {
-  const result = await fetch(`http://localhost:3000/mongodb/users/${id}`, {
+  const result = await fetch(`${API_URL}mongodb/users/${id}`, {
     method: "GET",
   });
 
@@ -24,7 +26,7 @@ export const getUser = async (id) => {
 };
 
 export const getUsers = async () => {
-  const result = await fetch("http://localhost:3000/mongodb/users", {
+  const result = await fetch(`${API_URL}mongodb/users`, {
     method: "GET",
   });
 
@@ -32,7 +34,7 @@ export const getUsers = async () => {
 };
 
 export const updateUser = async (formData, id) => {
-  const result = await fetch(`http://localhost:3000/mongodb/users/${id}`, {
+  const result = await fetch(`${API_URL}mongodb/users/${id}`, {
     method: "PATCH",
     body: formData,
   });
@@ -47,7 +49,7 @@ export const updateUser = async (formData, id) => {
 };
 
 export const deleteUser = async (id) => {
-  const result = await fetch(`http://localhost:3000/mongodb/users/${id}`, {
+  const result = await fetch(`${API_URL}mongodb/users/${id}`, {
     method: "DELETE",
   });
 

@@ -3,7 +3,9 @@
 ## Descripción
 FrontEnd para administrar usuarios en MySql y MongoDB.
 
-Si todavia no tienes la API del proyecto, clonalo desde el siguiente repositorio: [mysql-and-mongo-connection-backend](https://github.com/ValentinHer/mysql-and-mongo-connection-backend).
+Si todavia no tienes la API del proyecto, clona cualquiera de estos dos repositorios:
+API con SpringBoot: [mysql-and-mongo-connection-backend-spring](https://github.com/ValentinHer/mysql-and-mongo-connection-backend-spring)
+API con Express.js: [mysql-and-mongo-connection-backend-expressjs](https://github.com/ValentinHer/mysql-and-mongo-connection-backend).
 
 ## Configuración
 
